@@ -1,4 +1,5 @@
 name: Deploy GitHub Pages
+run-name: Deploy GitHub Pages (manual refresh)
 
 on:
   push:
