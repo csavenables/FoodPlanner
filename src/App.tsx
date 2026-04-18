@@ -120,13 +120,7 @@ export default function App() {
   const [now, setNow] = useState(() => new Date());
   const [showWeek, setShowWeek] = useState(false);
   const [showShoppingList, setShowShoppingList] = useState(false);
-  const [openDays, setOpenDays] = useState<Record<DayKey, boolean>>(() => {
-    const initial = {} as Record<DayKey, boolean>;
-    DAYS.forEach((day) => {
-      initial[day] = false;
-    });
-    return initial;
-  });
+  const [openDay, setOpenDay] = useState<DayKey | null>(null);
 
   useEffect(() => {
     window.localStorage.setItem(USER_STORAGE_KEY, selectedUser);
@@ -141,22 +135,19 @@ export default function App() {
   const todayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
   const today = DAYS[todayIndex];
   const toggleDay = (day: DayKey) => {
-    setOpenDays((prev) => ({
-      ...prev,
-      [day]: !prev[day],
-    }));
+    setOpenDay((prev) => (prev === day ? null : day));
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 pb-10">
       <div className="mx-auto w-full max-w-3xl px-4 py-6 animate-fade-in space-y-5">
-        <header className="flex items-center justify-between gap-3">
-          <div className="inline-flex rounded-lg border border-border bg-card p-1">
+        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="inline-flex w-full rounded-lg border border-border bg-card p-1 sm:w-auto">
             {(["K", "C"] as UserKey[]).map((user) => (
               <button
                 key={user}
                 onClick={() => setSelectedUser(user)}
-                className={`min-w-10 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
+                className={`min-w-10 flex-1 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors sm:flex-none ${
                   selectedUser === user ? "bg-nutrition text-white" : "text-foreground hover:bg-muted"
                 }`}
                 aria-pressed={selectedUser === user}
@@ -168,7 +159,7 @@ export default function App() {
 
           <button
             onClick={() => setShowShoppingList(true)}
-            className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted sm:w-auto"
           >
             <ShoppingBag className="h-4 w-4" />
             Shopping List
@@ -209,7 +200,7 @@ export default function App() {
               setShowWeek((prev) => {
                 const next = !prev;
                 if (next) {
-                  setOpenDays((current) => ({ ...current, [today]: true }));
+                  setOpenDay(today);
                 }
                 return next;
               })
@@ -227,16 +218,16 @@ export default function App() {
                   <button
                     onClick={() => toggleDay(day)}
                     className="flex w-full items-center justify-between px-4 py-3 text-left font-medium hover:bg-muted/50"
-                    aria-expanded={openDays[day]}
+                    aria-expanded={openDay === day}
                   >
                     <span className={day === today ? "text-nutrition" : ""}>{day}</span>
-                    {openDays[day] ? (
+                    {openDay === day ? (
                       <ChevronUp className="h-4 w-4 text-black" />
                     ) : (
                       <ChevronDown className="h-4 w-4 text-black" />
                     )}
                   </button>
-                  {openDays[day] ? (
+                  {openDay === day ? (
                     <div className="space-y-3 border-t border-border px-4 py-4">
                       {SLOT_ORDER.map((slot) => {
                         const meal = WEEKLY_PLAN[selectedUser][day][slot];
