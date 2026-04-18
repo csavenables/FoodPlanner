@@ -140,14 +140,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 pb-10">
-      <div className="mx-auto w-full max-w-3xl px-4 py-6 animate-fade-in space-y-5">
-        <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="inline-flex w-full rounded-lg border border-border bg-card p-1 sm:w-auto">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
+          <div className="inline-flex rounded-lg border border-border bg-card p-1">
             {(["K", "C"] as UserKey[]).map((user) => (
               <button
                 key={user}
                 onClick={() => setSelectedUser(user)}
-                className={`min-w-10 flex-1 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors sm:flex-none ${
+                className={`min-w-10 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors ${
                   selectedUser === user ? "bg-nutrition text-white" : "text-foreground hover:bg-muted"
                 }`}
                 aria-pressed={selectedUser === user}
@@ -159,12 +159,15 @@ export default function App() {
 
           <button
             onClick={() => setShowShoppingList(true)}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted"
           >
             <ShoppingBag className="h-4 w-4" />
             Shopping List
           </button>
-        </header>
+        </div>
+      </header>
+
+      <div className="mx-auto w-full max-w-3xl px-4 pt-24 pb-6 animate-fade-in space-y-5">
 
         <section className="rounded-xl border border-border bg-card p-4">
           <div className="flex items-center justify-between">
